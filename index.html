@@ -1,57 +1,79 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>我的博客</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="./assets/images/favicon.png">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c05bb16ea908292af9f6c513087a1cc3";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-8550836177608334",
+        enable_page_level_ads: true
+    });
+    </script>
+    <meta charset="UTF-8">
+    <title>WebStack.cc - 设计师网址导航</title>
+    <script>
+    if (navigator.appName == "Netscape") {
+        var language = navigator.language;
+    } else {
+        var language = navigator.browserLanguage;
+
+    }
+
+    if (language.indexOf("en") > -1) {
+        document.location.href = "en/index.html";
+    } else if (language.indexOf("zh") > -1) {
+        document.location.href = "cn/index.html";
+    } else {
+        document.location.href = "en/index.html";
+
+    }
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="viggo" />
+    <title>WebStack.cc - Collection of resources and tools for Designers</title>
+    <meta name="keywords" content="UI设计,UI设计素材,设计导航,网址导航,设计资源,创意导航,创意网站导航,设计师网址大全,设计素材大全,设计师导航,UI设计资源,优秀UI设计欣赏,设计师导航,设计师网址大全,设计师网址导航,产品经理网址导航,UX师网址导航,www.webstack.cc">
+    <meta name="description" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    
+    <!-- / FB Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://www.webstack.cc/">
+    <meta property="og:title" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    <meta property="og:description" content="UI设计,UI设计素材,设计导航,网址导航,设计资源,创意导航,创意网站导航,设计师网址大全,设计素材大全,设计师导航,UI设计资源,优秀UI设计欣赏,设计师导航,设计师网址大全,设计师网址导航,产品经理网址导航,UX师网址导航,www.webstack.cc">
+    <meta property="og:image" content="http://www.webstack.cc/assets/images/webstack_banner_cn.png">
+    <meta property="og:site_name" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    <!-- / Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WebStack - 收集国内外优秀设计网站、UI设计资源网站、灵感创意网站、Resources网站，定时更新分享优质产品设计书签。www.webstack.cc">
+    <meta name="twitter:description" content="UI设计,UI设计素材,设计导航,网址导航,设计资源,创意导航,创意网站导航,设计师网址大全,设计素材大全,设计师导航,UI设计资源,优秀UI设计欣赏,设计师导航,设计师网址大全,设计师网址导航,产品经理网址导航,UX师网址导航,www.webstack.cc">
+    <meta name="twitter:image" content="http://www.webstack.cc/assets/images/webstack_banner_cn.png">
 </head>
-<body class="bg-gray-100 text-gray-800">
 
-  <!-- 导航栏 -->
-  <header class="bg-white shadow sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-indigo-600">我的博客</h1>
-      <nav class="space-x-6">
-        <a href="#" class="text-gray-700 hover:text-indigo-600">首页</a>
-        <a href="#" class="text-gray-700 hover:text-indigo-600">文章</a>
-        <a href="#" class="text-gray-700 hover:text-indigo-600">关于我</a>
-        <a href="#" class="text-gray-700 hover:text-indigo-600">联系</a>
-      </nav>
-    </div>
-  </header>
+<body>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111463289-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
 
-  <!-- 欢迎区域 -->
-  <section class="bg-indigo-50 py-16">
-    <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-4xl font-bold mb-4 text-indigo-700">欢迎来到我的个人博客</h2>
-      <p class="text-lg text-gray-600">分享我的学习、编程、生活与思考。</p>
-    </div>
-  </section>
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
 
-  <!-- 文章预览 -->
-  <main class="max-w-5xl mx-auto px-4 py-12 grid gap-8 md:grid-cols-2">
-    <article class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition">
-      <h3 class="text-2xl font-semibold text-indigo-700">使用随机森林分析酒店星级</h3>
-      <p class="text-gray-600 mt-2">基于携程酒店数据，构建预测星级的机器学习模型，效果最佳的是随机森林...</p>
-      <a href="#" class="text-indigo-500 mt-4 inline-block">阅读全文 →</a>
-    </article>
-
-    <article class="bg-white rounded-2xl shadow p-6 hover:shadow-lg transition">
-      <h3 class="text-2xl font-semibold text-indigo-700">旅行中的城市观察</h3>
-      <p class="text-gray-600 mt-2">每一次旅程，都是重新认识一个城市的机会，记录下我在不同城市的见闻和思考...</p>
-      <a href="#" class="text-indigo-500 mt-4 inline-block">阅读全文 →</a>
-    </article>
-
-    <!-- 你可以继续添加更多文章卡片 -->
-  </main>
-
-  <!-- 页脚 -->
-  <footer class="bg-white border-t mt-12">
-    <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
-      &copy; 2025 我的博客 · 保留所有权利
-    </div>
-  </footer>
-
+    gtag('config', 'UA-111463289-1');
+    </script>
 </body>
+
 </html>
