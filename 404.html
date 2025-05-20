@@ -1,219 +1,117 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <title>kabaiye - 404</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
-    <link rel="shortcut icon" href="./assets/images/favicon.png">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77253689-1"></script>
-    
-    <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?c05bb16ea908292af9f6c513087a1cc3";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();
-    </script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-77253689-1');
-    </script>
+    <meta charset="UTF-8">
+    <title>404 - 次元裂缝观测站</title>
     <style>
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-    }
-    
-    a,
-    a img,
-    a:before,
-    a:after {
-        text-decoration: none;
-        transition-duration: .25s;
-    }
-    
-    section {
-        display: block;
-    }
-    
-    body {
-        line-height: 1;
-    }
-    
-    #about {
-        width: 40%;
-        position: absolute;
-        top: 40%;
-        left: 10%;
-        z-index: 20;
-        transform: translate(0, -50%);
-    }
-    
-    #about h1 {
-        margin: 30px;
-    }
-    
-    #about p {
-        margin: 30px;
-    }
-    
-    #about img {
-        margin-left: 30px;
-    }
-    
-    #about .social {
-        float: left;
-        margin: 30px;
-    }
-    
-    #about .copyright {
-        width: 100%;
-        float: left;
-        margin-bottom: 0px;
-    }
-    
-    @media (max-width: 768px) {
-        #about {
-            width: 100%;
-            left: 0px;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.85);
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a66efa;
         }
-        #about h1 {
-            margin: 30px;
-        }
-        #about p {
-            margin: 30px;
-        }
-        #about .social {
-            margin: 30px;
-        }
-        #about .copyright {
-            width: 100%;
-            float: left;
-            margin-bottom: 0px;
-        }
-    }
-    
-    @media (max-width: 580px) {
-        #about {
-            width: 100%;
-            left: 0px;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.85);
-        }
-        #about h1 {
-            margin: 30px;
-        }
-        #about p {
-            margin: 30px;
-            margin-bottom: 0;
-        }
-        #about .social {
-            margin: 30px;
-            margin-bottom: 0;
-        }
-        #about .copyright {
-            width: 100%;
-            float: left;
-            margin-bottom: 0;
-        }
-    }
-    
-    .animated {
-        animation-duration: 1s;
-        animation-fill-mode: both;
-    }
-    
-    .bounce-in {
-        animation-name: bounce-in;
-    }
-    
-    @keyframes bounce-in {
-        from,
-        60%,
-        75%,
-        90%,
-        to {
-            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-        }
-        0% {
-            opacity: 0;
-            transform: translate3d(-3000px, -50%, 0);
-        }
-        60% {
-            opacity: 1;
-            transform: translate3d(25px, -50%, 0);
-        }
-        75% {
-            transform: translate3d(-10px, -50%, 0);
-        }
-        90% {
-            transform: translate3d(5px, -50%, 0);
-        }
-        to {
-            transform: translate3d(0, -50%);
-        }
-    }
-    
-    body {
-        font-family: "Roboto", sans-serif;
-        font-size: 16px;
-        font-weight: 300;
-        line-height: 1.75;
-        color: rgba(0, 0, 0, 0.65);
-    }
-    
-    h1 {
-        font-family: "Merriweather", sans-serif;
-        font-size: 50px;
-        font-weight: 700;
-        line-height: 1.25;
-        color: rgba(0, 0, 0, 0.85);
-        margin-bottom: 25px;
-    }
-    
-    a {
-        color: rgba(3, 3, 3, 0.85);
-        font-weight: 600;
-    }
-    
-    @media (max-width: 580px) {
+        
         body {
-            font-size: 14px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), #ff6b6b);
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
         }
+ 
+        .container {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            transform: rotate(-2deg);
+            animation: float 3s ease-in-out infinite;
+        }
+ 
         h1 {
-            font-size: 42px;
-            line-height: 1.45;
+            font-size: 8rem;
+            margin: 0;
+            color: var(--primary);
+            text-shadow: 3px 3px 0 #ffd700;
+            font-family: 'Comic Sans MS', cursive;
         }
-    }
-    
-    .bg-align {
-        margin-top: 50%;
-    }
+ 
+        .message {
+            font-size: 1.5rem;
+            color: #4a4a4a;
+            max-width: 500px;
+            margin: 1rem auto;
+            line-height: 1.6;
+        }
+ 
+        .emoji {
+            font-size: 4rem;
+            margin: 1rem;
+            display: inline-block;
+            animation: shake 0.5s ease infinite;
+        }
+ 
+        .portal {
+            width: 120px;
+            height: 120px;
+            background: var(--secondary);
+            border-radius: 50%;
+            margin: 2rem auto;
+            position: relative;
+            box-shadow: 0 0 30px rgba(166,110,250,0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+ 
+        .portal:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+ 
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+ 
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+ 
+        .scientific-label {
+            position: absolute;
+            font-size: 0.8rem;
+            color: #666;
+            transform: rotate(-10deg);
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     </style>
 </head>
-
 <body>
-    <section id="about" class="animated bounce-in">
-        <div class="bg-align">
-            <h1>404</h1>
-            <p>Oops! It looks like you're lost...</p>
-            <p>The Page you're looking for doesn't exist or another error occurred.</p>
-            <p><a href="http://kabaiye.github.io">👉  珍珠蚌</a></p>
+    <div class="container">
+        <span class="scientific-label">ERROR 404: 时空坐标异常</span>
+        <h1>404</h1>
+        <div class="emoji">🕳️🚀</div>
+        <p class="message">
+            根据多维宇宙观测协议第404条：<br>
+            您访问的页面可能正在经历以下状况：<br>
+            • 被熊猫程序猿搬去了竹叶星系<br>
+            • 掉进奶茶杯产生了布朗运动<br>
+            • 正在参加元宇宙非正式会谈 
+        </p>
+        <div class="portal" onclick="window.location.href='./html/home.html'"> 
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 1.2rem;">
+                紧急返回协议 
+            </div>
         </div>
-    </section>
+        <p style="color: #888; margin-top: 2rem;">
+            PS: 已通知维修小精灵（预计到达时间：当您点击上方按钮后）
+        </p>
+    </div>
 </body>
-
 </html>
