@@ -61,12 +61,13 @@
   <script src="../assets/js/lozad.js"></script>
   <!-- 自定义js库 -->
   <script src="../assets/data/data.js"></script>
+  <script src="../assets/data/mc_data.js"></script>
   <script src="../assets/js/render.js"></script>
   <script src="../assets/js/ui-interaction.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      renderSidebarMenu(menuData);
-      renderMainContent(siteData);
+      renderSidebarMenu(mcMenuData);
+      renderMainContent(mcSiteData);
       initUIInteractions(); // ✅ 初始化交互
     });
   </script>
