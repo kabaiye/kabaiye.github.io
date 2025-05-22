@@ -1,13 +1,15 @@
 function renderSidebarMenu(menuData) {
   const iconMap = [
-    "linecons-star",
-    "linecons-doc",
-    "linecons-lightbulb",
-    "linecons-thumbs-up",
-    "linecons-diamond",
-    "linecons-pencil",
-    "linecons-user",
-    //"linecons-heart"
+    "linecons-comment","linecons-location","linecons-cup","linecons-trash","linecons-doc",
+    "linecons-note","linecons-cog","linecons-params","linecons-calendar","linecons-sound",
+    "linecons-music","linecons-search","linecons-mail","linecons-star",
+    "linecons-user","linecons-videocam","linecons-camera","linecons-photo","linecons-attach",
+    "linecons-lock","linecons-eye","linecons-tag","linecons-thumbs-up","linecons-pencil",
+    "linecons-clock","linecons-lightbulb","linecons-tv","linecons-desktop","linecons-mobile",
+    "linecons-cd","linecons-inbox","linecons-globe","linecons-cloud","linecons-paper-plane",
+    "linecons-fire","linecons-graduation-cap","linecons-megaphone","linecons-database",
+    "linecons-key","linecons-beaker","linecons-truck","linecons-money","linecons-food",
+    "linecons-shop","linecons-diamond","linecons-t-shirt","linecons-wallet"
   ];
 
   const menuContainer = document.getElementById('main-menu');
@@ -15,7 +17,7 @@ function renderSidebarMenu(menuData) {
 
   Object.keys(menuData).forEach((mainTitle,index) => {
     const subItems = menuData[mainTitle];
-    const iconClass = iconMap[index%8] || "linecons-star";
+    const iconClass = iconMap[index%(iconMap.length)] || "linecons-star";
 
     const li = document.createElement("li");
 
