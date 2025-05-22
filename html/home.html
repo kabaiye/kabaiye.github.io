@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,6 +15,7 @@
   <link rel="stylesheet" href="../assets/css/fonts/linecons/css/linecons.css">
   <script src="../assets/js/jquery-1.11.1.min.js"></script>
 </head>
+
 <body class="page-body">
   <div class="page-container">
     <div class="sidebar-menu toggle-others fixed">
@@ -33,13 +35,14 @@
         </ul>
       </div>
     </div>
+    <!-- 页眉 -->
     <div class="main-content">
       <nav class="navbar user-info-navbar">
         <ul class="user-info-menu left-links list-inline list-unstyled">
           <li class="hidden-sm hidden-xs">
-              <a href="#" data-toggle="sidebar">
-                  <i class="fa-bars"></i>
-              </a>
+            <a href="#" data-toggle="sidebar">
+              <i class="fa-bars"></i>
+            </a>
           </li>
         </ul>
         <ul class="user-info-menu right-links list-inline list-unstyled">
@@ -47,9 +50,10 @@
         </ul>
       </nav>
       <!-- 网站内容由 JS 动态生成 -->
+      <!-- 页脚逻辑在"../assets/js/render.js" -->
     </div>
   </div>
-    <!-- Bottom Scripts -->
+  <!-- Bottom Scripts -->
   <script src="../assets/js/bootstrap.min.js"></script>
   <script src="../assets/js/TweenMax.min.js"></script>
   <script src="../assets/js/resizeable.js"></script>
@@ -60,16 +64,26 @@
   <script src="../assets/js/xenon-custom.js"></script>
   <script src="../assets/js/lozad.js"></script>
   <!-- 自定义js库 -->
-  <script src="../assets/data/data.js"></script>
-  <script src="../assets/data/mc_data.js"></script>
   <script src="../assets/js/render.js"></script>
   <script src="../assets/js/ui-interaction.js"></script>
+  <!-- 通过localStorage选择导入的数据，导入不同数据展示的页面不同 -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      renderSidebarMenu(mcMenuData);
-      renderMainContent(mcSiteData);
-      initUIInteractions(); // ✅ 初始化交互
-    });
+    const config = JSON.parse(localStorage.getItem('config'));
+    const script = document.createElement("script");
+    script.src = config.dataJsPath; // 你想加载的脚本路径
+    script.type = "text/javascript";
+    script.onload = function () {
+      // 脚本加载完成执行
+      if (typeof menuData !== 'undefined' && typeof siteData !== 'undefined') {
+        renderSidebarMenu(menuData); // 导入加载菜单数据
+        renderMainContent(siteData); // 导入加载主页面数据
+        initUIInteractions(); // 交互初始化
+      } else {
+        console.error("menuData 或 siteData 未定义，请检查 mc_data.js");
+      }
+    };
+    document.head.appendChild(script);
   </script>
 </body>
+
 </html>

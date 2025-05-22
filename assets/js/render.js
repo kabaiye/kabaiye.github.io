@@ -1,21 +1,21 @@
 function renderSidebarMenu(menuData) {
-  const iconMap = {
-    "常用推荐": "linecons-star",
-    "社区资讯": "linecons-doc",
-    "灵感采集": "linecons-lightbulb",
-    "素材资源": "linecons-thumbs-up",
-    "常用工具": "linecons-diamond",
-    "学习教程": "linecons-pencil",
-    "UED团队": "linecons-user",
-    "关于本站": "linecons-heart"
-  };
+  const iconMap = [
+    "linecons-star",
+    "linecons-doc",
+    "linecons-lightbulb",
+    "linecons-thumbs-up",
+    "linecons-diamond",
+    "linecons-pencil",
+    "linecons-user",
+    //"linecons-heart"
+  ];
 
   const menuContainer = document.getElementById('main-menu');
   menuContainer.innerHTML = "";
 
-  Object.keys(menuData).forEach(mainTitle => {
+  Object.keys(menuData).forEach((mainTitle,index) => {
     const subItems = menuData[mainTitle];
-    const iconClass = iconMap[mainTitle] || "linecons-star";
+    const iconClass = iconMap[index%8] || "linecons-star";
 
     const li = document.createElement("li");
 
@@ -103,7 +103,8 @@ function renderMainContent(data) {
       <!-- Add your copyright text here -->
       <div class="footer-text">
           &copy; 2025
-          <a href="./home.html"><strong>钓不到珍珠蚌</strong></a> design by <a href="https://github.com/kabaiye/" target="_blank"><strong>kabaiye</strong></a>
+          <a href="../index.html"><strong>钓不到珍珠蚌</strong></a> design by <a href="https://github.com/kabaiye" target="_blank"><strong>kabaiye</strong></a>
+          <a href="https://beian.miit.gov.cn/" target="_blank"><strong>&nbsp&nbsp&nbsp&nbsp鄂ICP备2024058921号-1</strong></a>
           <!--  - Purchase for only <strong>23$</strong> -->
       </div>
       <!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->

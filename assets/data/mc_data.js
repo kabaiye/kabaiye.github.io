@@ -1,4 +1,4 @@
-const mcMenuData = {
+const menuData = {
   "官网": [],
   "社区": [],
   "百科": [],
@@ -10,7 +10,7 @@ const mcMenuData = {
 }
 
 
-const mcSiteData = [
+const siteData = [
   {
     "category": "官网",
     "icon": "linecons-tag",
