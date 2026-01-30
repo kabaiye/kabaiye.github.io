@@ -1,17 +1,212 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="zh-CN">
 <head>
-    <link rel="shortcut icon" href="./assets/images/favicon.png">
     <meta charset="UTF-8">
-    <title>钓不到珍珠蚌</title>
-    <script>
-        //dataJsPath:网页数据地址
-        let dataJsPath = "../assets/data/mc_data.js"
-        localStorage.setItem('config', JSON.stringify({dataJsPath:dataJsPath}));
-        document.location.href = "./html/home.html";
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kabaiye工具箱</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0f0f12;
+            --bg-card: #18181c;
+            --bg-card-hover: #1f1f24;
+            --accent: #7c3aed;
+            --accent-soft: rgba(124, 58, 237, 0.25);
+            --accent-glow: rgba(124, 58, 237, 0.4);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.06);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景装饰 */
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-soft), transparent),
+                radial-gradient(ellipse 60% 40% at 100% 50%, rgba(124, 58, 237, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 0% 80%, rgba(124, 58, 237, 0.06), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .tool-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.5rem 1.75rem;
+            transition: 
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.25s ease,
+                background 0.2s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(124, 58, 237, 0.35);
+            background: var(--bg-card-hover);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 58, 237, 0.1);
+        }
+
+        .tool-card:active {
+            transform: translateY(-2px);
+        }
+
+        .tool-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--accent) 0%, #5b21b6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .tool-card:nth-child(2) .tool-icon {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+        }
+
+        .tool-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--text-primary);
+        }
+
+        .tool-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .tool-arrow {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .tool-card:hover .tool-arrow {
+            gap: 0.5rem;
+            transition: gap 0.2s ease;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
+    <div class="bg-pattern" aria-hidden="true"></div>
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="logo">工具箱</h1>
+            <p class="subtitle">实用小工具</p>
+        </header>
+
+        <nav class="tools-grid">
+            <a class="tool-card" href="htmls/zmd_jizhi/zmd_jizhi.html">
+                <div class="tool-icon">⚔</div>
+                <h2 class="tool-title">武器基质属性筛选器</h2>
+                <p class="tool-desc">按基础、附加、技能属性筛选武器基质，快速找到目标组合。</p>
+                <span class="tool-arrow">进入工具 →</span>
+            </a>
+
+            {% comment %} <a class="tool-card" href="htmls/demo/demo.html">
+                <div class="tool-icon">◇</div>
+                <h2 class="tool-title">Demo 演示</h2>
+                <p class="tool-desc">演示与测试入口，可在此添加新工具预览。</p>
+                <span class="tool-arrow">进入工具 →</span>
+            </a> {% endcomment %}
+        </nav>
+
+        <footer>
+            {% comment %} 链接 {% endcomment %}
+             <a href="https://github.com/kabaiye" target="_blank">GitHub</a>
+        </footer>
+    </div>
 </body>
 </html>
