@@ -12,6 +12,30 @@
         <h1>武器基质属性筛选器</h1>
         <div class="loading-info" id="loading-info">正在加载武器数据...</div>
 
+        <!-- 顶部筛选器：常驻显示 -->
+        <div class="top-filters" id="top-filters">
+            <label class="result-filter-item">
+                <span class="result-filter-label">命中数</span>
+                <select id="filter-hit" class="result-filter-select">
+                    <option value="3" selected>3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                </select>
+            </label>
+            <label class="result-filter-item">
+                <span class="result-filter-label">星级</span>
+                <select id="filter-star" class="result-filter-select">
+                    <option value="">全部</option>
+                </select>
+            </label>
+            <label class="result-filter-item">
+                <span class="result-filter-label">类型</span>
+                <select id="filter-type" class="result-filter-select">
+                    <option value="">全部</option>
+                </select>
+            </label>
+        </div>
+
         <!-- 分类标签组 -->
         <div class="category">
             <h2>基础属性</h2>
@@ -103,6 +127,27 @@
                 (a, b) => starOrder.indexOf(a) - starOrder.indexOf(b)
             );
             allTypes = [...new Set(weaponsData.map(w => w.type))].sort();
+
+            // 填充顶部筛选器的星级、类型选项
+            const starSelect = document.getElementById('filter-star');
+            const typeSelect = document.getElementById('filter-type');
+            starSelect.innerHTML = '<option value="">全部</option>' + allStarLevels.map(s => `<option value="${s}">${s}</option>`).join('');
+            typeSelect.innerHTML = '<option value="">全部</option>' + allTypes.map(t => `<option value="${t}">${t}</option>`).join('');
+
+            // 绑定顶部筛选器事件
+            document.getElementById('filter-hit').addEventListener('change', function () {
+                resultMinHitCount = parseInt(this.value, 10);
+                currentAttrFilteredList = computeAttrFilteredList();
+                renderResults(currentAttrFilteredList);
+            });
+            document.getElementById('filter-star').addEventListener('change', function () {
+                resultStarFilter = this.value;
+                updateResultCards();
+            });
+            document.getElementById('filter-type').addEventListener('change', function () {
+                resultTypeFilter = this.value;
+                updateResultCards();
+            });
 
             // 更新加载信息
             const loadingInfoEl = document.getElementById('loading-info');
@@ -212,7 +257,7 @@
             });
         }
 
-        // 筛选：只有基础、附加、技能三类都至少选了一个词条时才搜索并展示结果；否则不显示结果区
+        // 筛选：有选择即搜索，按「命中词条数」展示（不要求三类全选）
         function filterWeapons() {
             const resultsEl = document.getElementById('results');
             resultsEl.innerHTML = '';
@@ -221,21 +266,17 @@
                 return;
             }
 
-            const { base, additional, skill } = partitionSelected();
-            const hasBase = base.size >= 1;
-            const hasAdditional = additional.size >= 1;
-            const hasSkill = skill.size >= 1;
-            if (!hasBase || !hasAdditional || !hasSkill) {
-                return; // 三类都选完之前不搜索，也不显示「未找到」
-            }
-
             currentAttrFilteredList = computeAttrFilteredList();
             resultStarFilter = '';
             resultTypeFilter = '';
+            const starSelect = document.getElementById('filter-star');
+            const typeSelect = document.getElementById('filter-type');
+            if (starSelect) starSelect.value = '';
+            if (typeSelect) typeSelect.value = '';
             renderResults(currentAttrFilteredList);
         }
 
-        // 渲染结果区：有结果时显示顶部筛选器 + 卡片列表
+        // 渲染结果区：仅渲染卡片列表或「未找到」（筛选器已在顶部常驻）
         function renderResults(filtered) {
             const resultsEl = document.getElementById('results');
             if (filtered.length === 0) {
@@ -243,48 +284,7 @@
                 return;
             }
 
-            resultsEl.innerHTML = `
-                <div class="result-filters">
-                    <label class="result-filter-item">
-                        <span class="result-filter-label">命中词条数</span>
-                        <select id="filter-hit" class="result-filter-select">
-                            <option value="3" selected>3（全中）</option>
-                            <option value="2">2（至少2）</option>
-                            <option value="1">1（至少1）</option>
-                        </select>
-                    </label>
-                    <label class="result-filter-item">
-                        <span class="result-filter-label">星级</span>
-                        <select id="filter-star" class="result-filter-select">
-                            <option value="">全部</option>
-                            ${allStarLevels.map(s => `<option value="${s}">${s}</option>`).join('')}
-                        </select>
-                    </label>
-                    <label class="result-filter-item">
-                        <span class="result-filter-label">类型</span>
-                        <select id="filter-type" class="result-filter-select">
-                            <option value="">全部</option>
-                            ${allTypes.map(t => `<option value="${t}">${t}</option>`).join('')}
-                        </select>
-                    </label>
-                </div>
-                <div id="result-cards" class="result-cards"></div>
-            `;
-
-            document.getElementById('filter-hit').addEventListener('change', function () {
-                resultMinHitCount = parseInt(this.value, 10);
-                currentAttrFilteredList = computeAttrFilteredList();
-                updateResultCards();
-            });
-            document.getElementById('filter-star').addEventListener('change', function () {
-                resultStarFilter = this.value;
-                updateResultCards();
-            });
-            document.getElementById('filter-type').addEventListener('change', function () {
-                resultTypeFilter = this.value;
-                updateResultCards();
-            });
-
+            resultsEl.innerHTML = `<div id="result-cards" class="result-cards"></div>`;
             updateResultCards();
         }
 
