@@ -80,9 +80,10 @@
         // 当前按词条筛选后的结果（用于结果区内的星级/类型二次筛选）
         let currentAttrFilteredList = [];
 
-        // 结果区筛选：星级、类型（空字符串表示「全部」）
+        // 结果区筛选：星级、类型（空字符串表示「全部」）、命中词条数（3=全中，2=至少2，1=至少1）
         let resultStarFilter = '';
         let resultTypeFilter = '';
+        let resultMinHitCount = 3;
 
         // 从数据中提取的星级、类型选项（去重，init 时填充）
         let allStarLevels = [];
@@ -197,7 +198,21 @@
             return { base, additional, skill };
         }
 
-        // 筛选：同分类内「或」，不同分类间「且」；无选择时不展示结果
+        // 计算满足「命中词条数」的武器列表：按武器的属性1、属性2、属性3 各自是否在所选词条中计数
+        // 3 = 三个属性都符合；2 = 三个属性中任意两个或以上符合；1 = 至少一个属性符合
+        function computeAttrFilteredList() {
+            if (selectedAttrs.size === 0) return [];
+
+            return weaponsData.filter(w => {
+                const hitCount =
+                    (selectedAttrs.has(w.effect_1) ? 1 : 0) +
+                    (selectedAttrs.has(w.effect_2) ? 1 : 0) +
+                    (selectedAttrs.has(w.effect_3) ? 1 : 0);
+                return hitCount >= resultMinHitCount;
+            });
+        }
+
+        // 筛选：只有基础、附加、技能三类都至少选了一个词条时才搜索并展示结果；否则不显示结果区
         function filterWeapons() {
             const resultsEl = document.getElementById('results');
             resultsEl.innerHTML = '';
@@ -207,20 +222,17 @@
             }
 
             const { base, additional, skill } = partitionSelected();
-            const weaponEffects = w => [w.effect_1, w.effect_2, w.effect_3];
+            const hasBase = base.size >= 1;
+            const hasAdditional = additional.size >= 1;
+            const hasSkill = skill.size >= 1;
+            if (!hasBase || !hasAdditional || !hasSkill) {
+                return; // 三类都选完之前不搜索，也不显示「未找到」
+            }
 
-            const filtered = weaponsData.filter(w => {
-                const effects = weaponEffects(w);
-                const hasBase = base.size === 0 || effects.some(e => base.has(e));
-                const hasAdditional = additional.size === 0 || effects.some(e => additional.has(e));
-                const hasSkill = skill.size === 0 || effects.some(e => skill.has(e));
-                return hasBase && hasAdditional && hasSkill;
-            });
-
-            currentAttrFilteredList = filtered;
+            currentAttrFilteredList = computeAttrFilteredList();
             resultStarFilter = '';
             resultTypeFilter = '';
-            renderResults(filtered);
+            renderResults(currentAttrFilteredList);
         }
 
         // 渲染结果区：有结果时显示顶部筛选器 + 卡片列表
@@ -233,6 +245,14 @@
 
             resultsEl.innerHTML = `
                 <div class="result-filters">
+                    <label class="result-filter-item">
+                        <span class="result-filter-label">命中词条数</span>
+                        <select id="filter-hit" class="result-filter-select">
+                            <option value="3" selected>3（全中）</option>
+                            <option value="2">2（至少2）</option>
+                            <option value="1">1（至少1）</option>
+                        </select>
+                    </label>
                     <label class="result-filter-item">
                         <span class="result-filter-label">星级</span>
                         <select id="filter-star" class="result-filter-select">
@@ -251,6 +271,11 @@
                 <div id="result-cards" class="result-cards"></div>
             `;
 
+            document.getElementById('filter-hit').addEventListener('change', function () {
+                resultMinHitCount = parseInt(this.value, 10);
+                currentAttrFilteredList = computeAttrFilteredList();
+                updateResultCards();
+            });
             document.getElementById('filter-star').addEventListener('change', function () {
                 resultStarFilter = this.value;
                 updateResultCards();
@@ -291,7 +316,8 @@
                 effectsWrap.className = 'weapon-effects';
                 [w.effect_1, w.effect_2, w.effect_3].forEach(eff => {
                     const tag = document.createElement('span');
-                    tag.className = 'weapon-effect-tag';
+                    const matched = selectedAttrs.has(eff);
+                    tag.className = matched ? 'weapon-effect-tag' : 'weapon-effect-tag weapon-effect-tag-unmatched';
                     tag.textContent = eff;
                     effectsWrap.appendChild(tag);
                 });
