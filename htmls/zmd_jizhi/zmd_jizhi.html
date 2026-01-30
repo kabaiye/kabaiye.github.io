@@ -37,10 +37,9 @@
         <!-- 控制按钮 -->
         <div class="controls">
             <button class="btn-clear" id="btn-clear">清空选择</button>
-            <button class="btn-see-all" id="btn-see-all" style="display: none;">我就要看</button>
         </div>
 
-        <div class="status" id="status">请选择恰好 3 个属性进行筛选</div>
+        <div class="status" id="status">选择词条后展示包含对应词条的武器；</div>
 
         <div class="results" id="results">
             <!-- 动态渲染结果 -->
@@ -78,6 +77,17 @@
         // 当前选中属性集合
         let selectedAttrs = new Set();
 
+        // 当前按词条筛选后的结果（用于结果区内的星级/类型二次筛选）
+        let currentAttrFilteredList = [];
+
+        // 结果区筛选：星级、类型（空字符串表示「全部」）
+        let resultStarFilter = '';
+        let resultTypeFilter = '';
+
+        // 从数据中提取的星级、类型选项（去重，init 时填充）
+        let allStarLevels = [];
+        let allTypes = [];
+
         // 初始化：加载 JSON 并构建界面
         async function init() {
             const response = await fetch('/assets/zmd_jizhi/json/weapons.json');
@@ -85,6 +95,13 @@
                 throw new Error(`无法加载 weapons.json: ${response.status}`);
             }
             weaponsData = await response.json();
+
+            // 从 JSON 去重得到星级、类型选项（开销小，一次计算）
+            const starOrder = ['四星', '五星', '六星'];
+            allStarLevels = [...new Set(weaponsData.map(w => w.star_level))].sort(
+                (a, b) => starOrder.indexOf(a) - starOrder.indexOf(b)
+            );
+            allTypes = [...new Set(weaponsData.map(w => w.type))].sort();
 
             // 更新加载信息
             const loadingInfoEl = document.getElementById('loading-info');
@@ -115,10 +132,8 @@
 
             // 绑定清空按钮
             document.getElementById('btn-clear').addEventListener('click', clearSelection);
-            // 绑定“我就要看”按钮
-            document.getElementById('btn-see-all').addEventListener('click', filterWeaponsLoose);
 
-            // 初次渲染状态
+            // 初次渲染状态与结果
             updateStatus();
             filterWeapons();
         }
@@ -150,21 +165,15 @@
             filterWeapons();
         }
 
-        // 更新状态提示 & 控制按钮显示
+        // 更新状态提示
         function updateStatus() {
             const statusEl = document.getElementById('status');
-            const seeAllBtn = document.getElementById('btn-see-all');
             const count = selectedAttrs.size;
 
             if (count === 0) {
-                statusEl.textContent = '请选择恰好 3 个属性进行筛选';
-                seeAllBtn.style.display = 'none';
-            } else if (count === 3) {
-                statusEl.textContent = `已选中 ${count} 个属性：${[...selectedAttrs].join('、')}`;
-                seeAllBtn.style.display = 'none';
+                statusEl.textContent = '请选择词条以筛选武器';
             } else {
-                statusEl.textContent = `已选中 ${count} 个属性，请再选 ${3 - count} 个以匹配`;
-                seeAllBtn.style.display = 'inline-block';
+                statusEl.textContent = `已选 ${count} 个词条，下方展示包含对应词条的武器`;
             }
         }
 
@@ -178,45 +187,43 @@
             filterWeapons();
         }
 
-        // 标准筛选：仅当选中 3 个时触发（精确匹配）
+        // 按分类划分已选词条：基础 / 附加 / 技能
+        function partitionSelected() {
+            const base = new Set([...selectedAttrs].filter(a => BASE_ATTRS.includes(a)));
+            const additional = new Set([...selectedAttrs].filter(a => ADDITIONAL_ATTRS.includes(a)));
+            const skill = new Set([...selectedAttrs].filter(a =>
+                !BASE_ATTRS.includes(a) && !ADDITIONAL_ATTRS.includes(a)
+            ));
+            return { base, additional, skill };
+        }
+
+        // 筛选：同分类内「或」，不同分类间「且」；无选择时不展示结果
         function filterWeapons() {
             const resultsEl = document.getElementById('results');
             resultsEl.innerHTML = '';
 
-            if (selectedAttrs.size !== 3) {
-                return; // 仅当满3项时才做精确匹配
+            if (selectedAttrs.size === 0) {
+                return;
             }
 
-            const target = new Set(selectedAttrs);
+            const { base, additional, skill } = partitionSelected();
+            const weaponEffects = w => [w.effect_1, w.effect_2, w.effect_3];
+
             const filtered = weaponsData.filter(w => {
-                const weaponSet = new Set([w.effect_1, w.effect_2, w.effect_3]);
-                return weaponSet.size === 3 &&
-                       weaponSet.size === target.size &&
-                       [...weaponSet].every(e => target.has(e)) &&
-                       [...target].every(e => weaponSet.has(e));
+                const effects = weaponEffects(w);
+                const hasBase = base.size === 0 || effects.some(e => base.has(e));
+                const hasAdditional = additional.size === 0 || effects.some(e => additional.has(e));
+                const hasSkill = skill.size === 0 || effects.some(e => skill.has(e));
+                return hasBase && hasAdditional && hasSkill;
             });
 
+            currentAttrFilteredList = filtered;
+            resultStarFilter = '';
+            resultTypeFilter = '';
             renderResults(filtered);
         }
 
-        // 宽松筛选：当前选中多少个，就匹配多少个（任意数量）
-        function filterWeaponsLoose() {
-            const resultsEl = document.getElementById('results');
-            resultsEl.innerHTML = '';
-
-            if (selectedAttrs.size === 0) return;
-
-            const target = new Set(selectedAttrs);
-            const filtered = weaponsData.filter(w => {
-                const weaponSet = new Set([w.effect_1, w.effect_2, w.effect_3]);
-                // 匹配规则：选中的每个属性都必须出现在武器的三个属性中
-                return [...target].every(attr => weaponSet.has(attr));
-            });
-
-            renderResults(filtered);
-        }
-
-        // 公共渲染函数：避免重复代码
+        // 渲染结果区：有结果时显示顶部筛选器 + 卡片列表
         function renderResults(filtered) {
             const resultsEl = document.getElementById('results');
             if (filtered.length === 0) {
@@ -224,8 +231,51 @@
                 return;
             }
 
-            resultsEl.innerHTML = '';
-            filtered.forEach(w => {
+            resultsEl.innerHTML = `
+                <div class="result-filters">
+                    <label class="result-filter-item">
+                        <span class="result-filter-label">星级</span>
+                        <select id="filter-star" class="result-filter-select">
+                            <option value="">全部</option>
+                            ${allStarLevels.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </label>
+                    <label class="result-filter-item">
+                        <span class="result-filter-label">类型</span>
+                        <select id="filter-type" class="result-filter-select">
+                            <option value="">全部</option>
+                            ${allTypes.map(t => `<option value="${t}">${t}</option>`).join('')}
+                        </select>
+                    </label>
+                </div>
+                <div id="result-cards" class="result-cards"></div>
+            `;
+
+            document.getElementById('filter-star').addEventListener('change', function () {
+                resultStarFilter = this.value;
+                updateResultCards();
+            });
+            document.getElementById('filter-type').addEventListener('change', function () {
+                resultTypeFilter = this.value;
+                updateResultCards();
+            });
+
+            updateResultCards();
+        }
+
+        // 根据当前星级/类型筛选更新结果卡片列表
+        function updateResultCards() {
+            const list = currentAttrFilteredList.filter(w => {
+                const matchStar = !resultStarFilter || w.star_level === resultStarFilter;
+                const matchType = !resultTypeFilter || w.type === resultTypeFilter;
+                return matchStar && matchType;
+            });
+
+            const container = document.getElementById('result-cards');
+            if (!container) return;
+
+            container.innerHTML = '';
+            list.forEach(w => {
                 const card = document.createElement('div');
                 card.className = 'weapon-card';
 
@@ -237,15 +287,19 @@
                 typeEl.className = 'weapon-type';
                 typeEl.textContent = `【${w.star_level} ${w.type}】`;
 
-                const effectsEl = document.createElement('div');
-                effectsEl.className = 'weapon-detail';
-                effectsEl.textContent = `属性一：${w.effect_1} | 属性二：${w.effect_2} | 属性三：${w.effect_3}`;
+                const effectsWrap = document.createElement('div');
+                effectsWrap.className = 'weapon-effects';
+                [w.effect_1, w.effect_2, w.effect_3].forEach(eff => {
+                    const tag = document.createElement('span');
+                    tag.className = 'weapon-effect-tag';
+                    tag.textContent = eff;
+                    effectsWrap.appendChild(tag);
+                });
 
                 card.appendChild(nameEl);
                 card.appendChild(typeEl);
-                card.appendChild(effectsEl);
-
-                resultsEl.appendChild(card);
+                card.appendChild(effectsWrap);
+                container.appendChild(card);
             });
         }
 

@@ -39,6 +39,25 @@
 
     backButton.setAttribute('style', style);
 
+    // 移动端：缩小按钮，避免遮挡标题
+    const mobileStyle = document.createElement('style');
+    mobileStyle.textContent = `
+        @media (max-width: 768px) {
+            a.back-to-home {
+                top: 8px !important;
+                left: 8px !important;
+                padding: 5px 10px !important;
+                font-size: 12px !important;
+                border-radius: 10px !important;
+                gap: 4px !important;
+            }
+            a.back-to-home > span:first-child {
+                font-size: 14px !important;
+            }
+        }
+    `;
+    document.head.appendChild(mobileStyle);
+
     // 悬停效果：轻微上浮，背景变透，阴影增强
     backButton.addEventListener('mouseenter', () => {
         backButton.style.transform = 'translateY(-3px)';
