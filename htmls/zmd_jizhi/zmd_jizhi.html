@@ -95,7 +95,10 @@
             "终结技效率提升"
         ];
 
-        // 所有武器数据
+        // 星级数字与显示文案映射
+        const STAR_LABEL = { 4: '四星', 5: '五星', 6: '六星' };
+
+        // 所有武器数据（来自 window.WEAPONS）
         let weaponsData = [];
 
         // 当前选中属性集合
@@ -113,17 +116,46 @@
         let allStarLevels = [];
         let allTypes = [];
 
-        // 初始化：加载 JSON 并构建界面
-        async function init() {
-            const response = await fetch('/assets/zmd_jizhi/json/weapons.json');
-            if (!response.ok) {
-                throw new Error(`无法加载 weapons.json: ${response.status}`);
-            }
-            weaponsData = await response.json();
+        // 优先从远程加载 weapons.js，失败则使用本地
+        function loadWeaponsData() {
+            const remoteUrl = 'https://end.canmoe.com/data/weapons.js';
+            const localUrl = '/assets/zmd_jizhi/js/weapons.js';
 
-            // 从 JSON 去重得到星级、类型选项（开销小，一次计算）
-            const starOrder = ['四星', '五星', '六星'];
-            allStarLevels = [...new Set(weaponsData.map(w => w.star_level))].sort(
+            function tryInit() {
+                if (typeof window.WEAPONS !== 'undefined') {
+                    init();
+                } else {
+                    document.getElementById('results').innerHTML = '<div class="no-results">加载失败：未获取到武器数据</div>';
+                }
+            }
+
+            function loadFallback() {
+                const script = document.createElement('script');
+                script.src = localUrl;
+                script.onload = tryInit;
+                script.onerror = function () {
+                    document.getElementById('results').innerHTML = '<div class="no-results">加载失败：远程与本地数据均不可用</div>';
+                };
+                document.head.appendChild(script);
+            }
+
+            const script = document.createElement('script');
+            script.src = remoteUrl;
+            script.onload = tryInit;
+            script.onerror = loadFallback;
+            document.head.appendChild(script);
+        }
+
+        // 初始化：使用 window.WEAPONS 并构建界面
+        function init() {
+            if (typeof window.WEAPONS === 'undefined') {
+                throw new Error('无法加载武器数据，请确保 weapons.js 已正确引入');
+            }
+            weaponsData = window.WEAPONS;
+
+            // 从数据去重得到星级、类型选项（rarity: 4,5,6）
+            const starOrder = [4, 5, 6];
+            allStarLevels = [...new Set(weaponsData.map(w => w.rarity))].sort(
                 (a, b) => starOrder.indexOf(a) - starOrder.indexOf(b)
             );
             allTypes = [...new Set(weaponsData.map(w => w.type))].sort();
@@ -131,7 +163,7 @@
             // 填充顶部筛选器的星级、类型选项
             const starSelect = document.getElementById('filter-star');
             const typeSelect = document.getElementById('filter-type');
-            starSelect.innerHTML = '<option value="">全部</option>' + allStarLevels.map(s => `<option value="${s}">${s}</option>`).join('');
+            starSelect.innerHTML = '<option value="">全部</option>' + allStarLevels.map(s => `<option value="${s}">${STAR_LABEL[s]}</option>`).join('');
             typeSelect.innerHTML = '<option value="">全部</option>' + allTypes.map(t => `<option value="${t}">${t}</option>`).join('');
 
             // 绑定顶部筛选器事件
@@ -156,9 +188,9 @@
             // 提取所有唯一属性值（用于自动分类）
             const allAttributes = new Set();
             weaponsData.forEach(w => {
-                allAttributes.add(w.effect_1);
-                allAttributes.add(w.effect_2);
-                allAttributes.add(w.effect_3);
+                allAttributes.add(w.s1);
+                allAttributes.add(w.s2);
+                allAttributes.add(w.s3);
             });
 
             // 自动分类：技能属性 = 所有属性 - 基础 - 附加
@@ -250,9 +282,9 @@
 
             return weaponsData.filter(w => {
                 const hitCount =
-                    (selectedAttrs.has(w.effect_1) ? 1 : 0) +
-                    (selectedAttrs.has(w.effect_2) ? 1 : 0) +
-                    (selectedAttrs.has(w.effect_3) ? 1 : 0);
+                    (selectedAttrs.has(w.s1) ? 1 : 0) +
+                    (selectedAttrs.has(w.s2) ? 1 : 0) +
+                    (selectedAttrs.has(w.s3) ? 1 : 0);
                 return hitCount >= resultMinHitCount;
             });
         }
@@ -291,7 +323,7 @@
         // 根据当前星级/类型筛选更新结果卡片列表
         function updateResultCards() {
             const list = currentAttrFilteredList.filter(w => {
-                const matchStar = !resultStarFilter || w.star_level === resultStarFilter;
+                const matchStar = !resultStarFilter || String(w.rarity) === resultStarFilter;
                 const matchType = !resultTypeFilter || w.type === resultTypeFilter;
                 return matchStar && matchType;
             });
@@ -310,11 +342,11 @@
 
                 const typeEl = document.createElement('div');
                 typeEl.className = 'weapon-type';
-                typeEl.textContent = `【${w.star_level} ${w.type}】`;
+                typeEl.textContent = `【${STAR_LABEL[w.rarity]} ${w.type}】`;
 
                 const effectsWrap = document.createElement('div');
                 effectsWrap.className = 'weapon-effects';
-                [w.effect_1, w.effect_2, w.effect_3].forEach(eff => {
+                [w.s1, w.s2, w.s3].forEach(eff => {
                     const tag = document.createElement('span');
                     const matched = selectedAttrs.has(eff);
                     tag.className = matched ? 'weapon-effect-tag' : 'weapon-effect-tag weapon-effect-tag-unmatched';
@@ -329,12 +361,8 @@
             });
         }
 
-        // 启动
-        init().catch(err => {
-            document.getElementById('results').innerHTML = `
-                <div class="no-results">加载失败：${err.message}</div>
-            `;
-        });
+        // 启动：先加载武器数据（远程优先，失败再用本地），再初始化
+        loadWeaponsData();
     </script>
 </body>
 </html>
