@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "mcp-feedback-enhanced": {
+      "type": "stdio",
+      "command": "c:\\Users\\kabaiye\\.cursor\\extensions\\mcp-feedback.cursor-feedback-2-3.13.34\\dist\\bin\\tauri-overlay.exe",
+      "args": [
+        "mcp",
+        "--merged"
+      ],
+      "env": {
+        "MCP_FEEDBACK_WORKSPACE_ID": "8119a4ea25a7",
+        "MCP_FEEDBACK_WORKSPACE_FOLDER": "c:\\Users\\kabaiye\\Desktop\\file\\quan_ai\\kabaiye.github.io",
+        "MCP_FEEDBACK_WORKSPACE_NAME": "kabaiye.github.io",
+        "MCP_FEEDBACK_WORKSPACE_DISPLAY_NAME": "kabaiye.github.io",
+        "MCP_FEEDBACK_STATE_DB": "c:\\Users\\kabaiye\\AppData\\Roaming\\Cursor\\User\\workspaceStorage\\062eb185590d3b5880de653e74b8e7da\\state.vscdb"
+      },
+      "timeout": 600,
+      "autoApprove": [
+        "interactive_feedback"
+      ]
+    }
+  }
+}

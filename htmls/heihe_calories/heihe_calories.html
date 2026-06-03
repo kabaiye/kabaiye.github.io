@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日热量记录</title>
+    <script defer src="/assets/heihe_calories/js/back-to-home.js"></script>
+    <script defer src="/assets/heihe_calories/js/calories.js"></script>
+    <link rel="stylesheet" href="/assets/heihe_calories/css/calories.css">
+</head>
+<body>
+    <main class="page">
+        <header class="header">
+            <h1>每日热量记录</h1>
+            <p>记录属于你的小目标</p>
+        </header>
+
+        <div class="group">
+            <label for="account">邮箱</label>
+            <input id="account" type="email" placeholder="请输入邮箱" autocomplete="username">
+        </div>
+
+        <div class="group">
+            <label for="password">密码</label>
+            <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password">
+        </div>
+
+        <div class="group remember">
+            <input type="checkbox" id="remember">
+            <label for="remember">记住账号密码</label>
+        </div>
+
+        <div class="group">
+            <label for="steps">热量值</label>
+            <div class="step-control">
+                <button type="button" onclick="changeStep(-100)" aria-label="减少100">−</button>
+                <input id="steps" type="number" value="10000" min="0" step="100">
+                <button type="button" onclick="changeStep(100)" aria-label="增加100">+</button>
+            </div>
+        </div>
+
+        <button type="button" class="submit" id="submit-btn" onclick="submitRecord()">提交今日记录</button>
+
+        <div class="tip-box">
+            <strong>提示</strong>
+            该工具只能改高不能改低，输入值须高于现有数值。提交成功但未生效时，请确认账号密码与目标热量是否正确。
+        </div>
+
+        <section class="records">
+            <h3>本地提交记录</h3>
+            <div id="records-list"></div>
+        </section>
+    </main>
+
+    <div id="loading-mask" aria-hidden="true">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <p style="margin-top:12px;font-size:14px;color:var(--text-secondary)">提交中，请稍候…</p>
+        </div>
+    </div>
+</body>
+</html>
